@@ -6,7 +6,7 @@ from _Framework.ButtonElement import ButtonElement
 from _Framework.TransportComponent import TransportComponent
 from _Framework.SessionComponent import SessionComponent
 
-import settings
+from settings import *
 
 class LinkedNavControl(ControlSurface):
 
@@ -28,6 +28,9 @@ class LinkedNavControl(ControlSurface):
 	def _setup_session(self):
 		self._session = SessionComponent(numTRACKS, numSCENES)
 		self._session.name = "Session_Control"
+		buttonUP = ButtonElement(True, MIDI_NOTE_TYPE, CHAN, SCENE_BANK_PREV)
+		buttonDN = ButtonElement(True, MIDI_NOTE_TYPE, CHAN, SCENE_BANK_NEXT)
+		self._session.set_scene_bank_buttons(buttonDN, buttonUP)
 		self.set_highlighting_session_component(self._session)
 		self._session._link()
 
