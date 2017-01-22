@@ -6,7 +6,7 @@
     <ProjectGuid>{d907666e-a544-4376-a369-f1d408f6733e}</ProjectGuid>
     <ProjectHome />
     <StartupFile />
-    <SearchPath />
+    <SearchPath>..\AbletonLive9_RemoteScripts\;..\AbletonLive9_RemoteScripts\_Framework\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
@@ -21,7 +21,11 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="LinkedNavControl\Control.py" />
     <Compile Include="LinkedNavControl\LinkedNavControl.py" />
+    <Compile Include="LinkedNavControl\Logging.py" />
+    <Compile Include="LinkedNavControl\MIDI.py" />
+    <Compile Include="LinkedNavControl\SessionControl.py" />
     <Compile Include="LinkedNavControl\settings.py" />
     <Compile Include="LinkedNavControl\__init__.py" />
   </ItemGroup>

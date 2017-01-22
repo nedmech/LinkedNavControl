@@ -5,35 +5,48 @@ numSCENES = 1
 # debug_mode: whether the log-function should output to logfile
 debug_mode = False
 
-"""
-MIDI Notes and CC numbers to link to control actions
-"""
+from MIDI import * # import MIDI status codes
 
-CHAN = 0 # default MIDI Channel for communication (0-15)
+""" settings which MIDI-notes and CCs trigger which functionality """
 
-STOP_BUTTON              =  0 # C-2
-STOP_ALL_CLIPS           =  1 # C#-2
-STOP_ALL_CLIPS_NOW       =  2 #D-2
 
-SELECT_FIRST_SCENE       =  4 # E-2
-SELECT_PREV_SCENE        =  5 # F-2
-SELECT_NEXT_SCENE        =  6 # F#-2
-SELECT_LAST_SCENE        =  7 # G-2
+# debug_mode: whether the log-function should output to logfile
+debug_mode = True
 
-PLAY_PREVIOUS_SCENE      =  8 # G#-2
-PLAY_SELECTED_SCENE      =  9 # A-2
-PLAY_NEXT_SCENE          = 10 # A#-2
-SELECT_PLAYING_CLIP_SLOT = 11 # B-2
+midi_mapping = {
+	"scroll_scene_banks": CC(3),
+	"select_scene_bank": CC(0, ABSOLUTE),
 
-STOP_SELECTED_TRACK      = 12 # C-1
+	"scroll_scenes": CC(14),
+	"select_scene" : CC(15, ABSOLUTE),
 
-SELECT_FIRST_TRACK       = 16 # E-1
-SELECT_PREV_TRACK        = 17 # F-1
-SELECT_NEXT_TRACK        = 18 # F#-1
-SELECT_LAST_TRACK        = 19 # G-1
+	"scroll_tracks": CC(16),
+	"select_track" : CC(17, ABSOLUTE),
 
-SCENE_BANK_FIRST         = 29 # E0
-SCENE_BANK_NEXT          = 29 # F0
-SCENE_BANK_PREV          = 30 # F#0
-SCENE_BANK_LAST          = 31 # G0
+	"stop_playing"              : Note(0), 	# C-2
+	"stop_all_clips"            : Note(1),	# C#-2
+	"stop_all_clips_immediately": Note(2),	# D-2
 
+	"first_scene"		        : Note(4), 	# E-2
+	"prev_scene"		        : Note(5), 	# F-2
+	"next_scene"                : Note(6),	# F#-2
+	"last_scene"                : Note(7),	# G-2
+
+	"play_selected_scene"       : Note(8),	# G#-2
+	"play_prev_scene"           : Note(9),	# A-2
+	"play_next_scene"           : Note(10),	# A#-2
+	"select_playing_clip"       : Note(11),	# B-2 # highlights clipslot with currently playing clip 
+
+
+	"stop_selected_track"       : Note(12),	# C-1
+
+	"first_track"               : Note(16),	# E-1
+	"prev_track"                : Note(17),	# F-1
+	"next_track"                : Note(18),	# F#-1
+	"last_track"                : Note(19),	# G-1
+
+	"scene_bank_first"			: Note(28), # E0
+	"scene_bank_up"				: Note(29), # F0
+	"scene_bank_down"			: Note(30), # F#0
+	"scene_bank_last" 			: Note(31), # G0
+}
