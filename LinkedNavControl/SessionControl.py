@@ -62,6 +62,8 @@ class SessionControl(Control):
             ("scene_bank_down", self.scene_bank_down),
             ("scene_bank_last", self.scene_bank_last),
 
+            ("scene_bank_to_selected", self.scene_bank_to_selected),
+            
             ("scroll_scenes", self.scroll_scenes),
             ("scroll_tracks", self.scroll_tracks),
             ("select_scene", self.select_scene),
@@ -224,6 +226,18 @@ class SessionControl(Control):
 
 
     # Scene Bank Controls for Linked SessionControl
+
+    def scene_bank_to_selected(self, value, mode, status):
+        if not self.session:
+            return
+        track_offset = self.session.track_offset()
+        scene = self.song.view.selected_scene
+        scenes = self.song.scenes
+        max_scenes = len(scenes)
+        for i in range(max_scenes):
+            if scene == scenes[i]:
+                self.session.set_offsets(track_offset, i)
+
 
     def scene_bank_first(self, value, mode, status):
         if not self.session:

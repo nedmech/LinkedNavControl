@@ -41,6 +41,8 @@ midi_mapping = {
     "next_track"                : Note(18), # F#-1
     "last_track"                : Note(19), # G-1
 
+    "scene_bank_to_selected"    : Note(24), # C0
+
     "scene_bank_first"          : Note(28), # E0
     "scene_bank_up"             : Note(29), # F0
     "scene_bank_down"           : Note(30), # F#0
