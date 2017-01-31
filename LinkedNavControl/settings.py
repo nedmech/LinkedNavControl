@@ -1,5 +1,5 @@
 # SessionComponent size 
-numTRACKS = 1
+numTRACKS = 8
 numSCENES = 1
 
 # debug_mode: whether the log-function should output to log file
@@ -35,6 +35,8 @@ midi_mapping = {
     "select_playing_clip"       : Note(11), # B-2 
 
     "stop_selected_track"       : Note(12), # C-1
+    "mute_selected_track"       : Note(13), # C#-1
+    "unmute_selected_track"     : Note(14), # D-1
 
     "first_track"               : Note(16), # E-1
     "prev_track"                : Note(17), # F-1

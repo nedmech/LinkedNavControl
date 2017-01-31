@@ -41,6 +41,8 @@ class SessionControl(Control):
             
             
             ("stop_selected_track", self.stop_selected_track),
+            ("mute_selected_track", self.mute_selected_track),
+            ("unmute_selected_track", self.unmute_selected_track),
             
 
             ("first_track", self.select_first_track),
@@ -223,6 +225,20 @@ class SessionControl(Control):
         if status == MIDI.CC_STATUS and not value:
             return
         self.song.view.selected_track.stop_all_clips()
+
+
+    def mute_selected_track(self, value, mode, status):
+        if status == MIDI.CC_STATUS and not value:
+            return
+        log("SessionControl::mute_selected_track")
+        self.song.view.selected_track.mute = True
+
+
+    def unmute_selected_track(self, value, mode, status):
+        if status == MIDI.CC_STATUS and not value:
+            return
+        log("SessionControl::unmute_selected_track")
+        self.song.view.selected_track.mute = False
 
 
     # Scene Bank Controls for Linked SessionControl
