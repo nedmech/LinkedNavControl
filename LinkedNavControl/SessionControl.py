@@ -70,8 +70,19 @@ class SessionControl(Control):
             ("scroll_tracks", self.scroll_tracks),
             ("select_scene", self.select_scene),
             ("select_track", self.select_track),
+
+            ("stop_click_track", self.stop_click_track),
+            ("scene_bank_to_playing_LC", self.scene_bank_to_playing_LC),
+            ("select_playing_LC_scene", self.select_playing_LC_scene),
+            ("select_playing_DNAV_scene", self.select_playing_DNAV_scene),
+            
+            ("set_NAV_clips_enable", self.set_NAV_clips_enable),
+            ("set_DNAV_clips_enable", self.set_DNAV_clips_enable),
+            ("set_DCUE_clips_enable", self.set_DCUE_clips_enable),
         )
-    
+
+    #region ----- Internal Helper Functions -----
+
     # helper function 
     def get_all_tracks(self, only_visible = False):
         tracks = []
@@ -101,6 +112,9 @@ class SessionControl(Control):
             if scene == scenes[i]:
                 return scenes[max((0, min(i+d_value, max_scenes-1)))]
 
+    #endregion
+
+    #region ----- Global Transport Control -----
 
     def stop_playing(self, value, mode, status):
         if status == MIDI.CC_STATUS and not value:
@@ -117,6 +131,9 @@ class SessionControl(Control):
         self.song.stop_all_clips(False)
         self.song.stop_playing()
 
+    #endregion
+
+    #region ----- SCENE Control -----
 
     def scroll_scenes(self, value, mode, status):
         if mode == MIDI.ABSOLUTE:
@@ -180,7 +197,10 @@ class SessionControl(Control):
             if clip_slot.has_clip and clip_slot.clip.is_playing:
                 self.song.view.highlighted_clip_slot = clip_slot
     
-    
+    #endregion
+
+    #region ----- TRACK Control -----
+
     def scroll_tracks(self, value, mode, status):
         if mode == MIDI.ABSOLUTE:
             tracks = self.get_all_tracks(only_visible = True)
@@ -240,8 +260,9 @@ class SessionControl(Control):
         log("SessionControl::unmute_selected_track")
         self.song.view.selected_track.mute = False
 
+    #endregion
 
-    # Scene Bank Controls for Linked SessionControl
+    #region ----- SCENE BANK Controls for Linked SessionControl -----
 
     def scene_bank_to_selected(self, value, mode, status):
         if not self.session:
@@ -292,3 +313,92 @@ class SessionControl(Control):
         max_scenes = len(scenes) - 1
         self.session.set_offsets(track_offset, max_scenes)
 
+    #endregion
+
+    #region ----- SPECIAL Automation Control -----
+
+    # Helper Function
+    def get_track_by_name(self, track_name):
+        for track in self.song.tracks:
+            if (track.name == track_name):
+                return track
+
+    # Helper Function
+    def get_playing_clip_slot_by_track(self, track_name):
+        track = self.get_track_by_name(track_name)
+        if (track == None):
+            log("get_playing_clip_slot_by_track: track not found!")
+            return
+        for clip_slot in track.clip_slots:
+            if clip_slot.has_clip and clip_slot.clip.is_playing:
+                return clip_slot
+
+
+    # Helper function
+    def set_track_clips_enable(self, track_name, value):
+        track = self.get_track_by_name(track_name)
+        if (track == None):
+            log("set_track_clips_enable: track not found!")
+            return
+        muted = (value <= MIDI.STATUS_OFF2)
+        for clip_slot in track.clip_slots:
+            if clip_slot.has_clip:
+                clip_slot.clip.muted = muted
+
+
+    def stop_click_track(self, value, mode, status):
+        track = get_track_by_name(settings.CLICK_TRACK)
+        if (track == None):
+            log("stop_click_track: CLICK track not found!")
+            return
+        try:
+            track.stop_all_clips()
+        except:
+            log("stop_click_track: stop_all_clips() method error!")
+
+
+    def scene_bank_to_playing_LC(self, value, mode, status):
+        if (status == MIDI.CC_STATUS) and not value:
+            return
+        if not self.session:
+            return
+        track_offset = self.session.track_offset()
+        scene_offset = self.session.scene_offset()
+        scenes = self.song.scenes
+        scene_offset = self.get_playing_clip_slot_by_track(settings.LAUNCH_CONTROL_TRACK)
+        scenes = self.song.scenes
+        max_scenes = len(scenes)
+        for i in range(max_scenes):
+            if scene_offset == scenes[i]:
+                self.session.set_offsets(track_offset, i)
+
+
+    def select_playing_LC_scene(self, value, mode, status):
+        if (status == MIDI.CC_STATUS) and not value:
+            return
+        clip_slot = self.get_playing_clip_slot_by_track(settings.LAUNCH_CONTROL_TRACK)
+        if (clip_slot == None): return
+        self.song.view.highlighted_clip_slot = clip_slot
+
+
+    def select_playing_DNAV_scene(self, value, mode, status):
+        if (status == MIDI.CC_STATUS) and not value:
+            return
+        clip_slot = self.get_playing_clip_slot_by_track(settings.DYNAMIC_NAV_TRACK)
+        if (clip_slot == None): return
+        self.song.view.highlighted_clip_slot = clip_slot
+
+
+    def set_NAV_clips_enable(self, value, mode, status):
+        self.set_track_clips_enable(settings.NAVIGATION_TRACK, value)
+
+
+    def set_DNAV_clips_enable(self, value, mode, status):
+        self.set_track_clips_enable(settings.DYNAMIC_NAV_TRACK, value)
+
+
+    def set_DCUE_clips_enable(self, value, mode, status):
+        self.set_track_clips_enable(settings.DYNAMIC_CUE_TRACK, value)
+
+
+    #endregion

@@ -22,6 +22,7 @@ midi_mapping = {
     "stop_playing"              : Note( 0), # C-2
     "stop_all_clips"            : Note( 1), # C#-2
     "stop_all_clips_immediately": Note( 2), # D-2
+    "stop_click_track"          : Note( 3), # D#-2
 
     "first_scene"               : Note( 4), # E-2
     "prev_scene"                : Note( 5), # F-2
@@ -44,9 +45,24 @@ midi_mapping = {
     "last_track"                : Note(19), # G-1
 
     "scene_bank_to_selected"    : Note(24), # C0
+    "scene_bank_to_playing_LC"  : Note(25), # C#0
 
     "scene_bank_first"          : Note(28), # E0
     "scene_bank_up"             : Note(29), # F0
     "scene_bank_down"           : Note(30), # F#0
     "scene_bank_last"           : Note(31), # G0
+
+    "select_playing_LC_scene"   : Note(36), # C1
+    "select_playing_DNAV_scene" : Note(37), # C#1
+
+    "set_NAV_clips_enable"      : Note(40), # E1
+    "set_DNAV_clips_enable"     : Note(41), # F1
+    "set_DCUE_clips_enable"     : Note(42), # F#1
 }
+
+# Track Names for custom automation tracks
+CLICK_TRACK          = "CLICK"
+LAUNCH_CONTROL_TRACK = "LC"
+NAVIGATION_TRACK     = "NAV"
+DYNAMIC_NAV_TRACK    = "DNAV"
+DYNAMIC_CUE_TRACK    = "DCUE"
