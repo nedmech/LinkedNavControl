@@ -347,7 +347,7 @@ class SessionControl(Control):
 
 
     def stop_click_track(self, value, mode, status):
-        track = get_track_by_name(settings.CLICK_TRACK)
+        track = self.get_track_by_name(settings.CLICK_TRACK)
         if (track == None):
             log("stop_click_track: CLICK track not found!")
             return
