@@ -130,6 +130,20 @@ class SessionControl(Control):
 
 
     # helper function
+    def _get_playing_scene_by_track(self, track_name):
+        playing_clip_slot = self._get_playing_clip_slot_by_track(track_name)
+        if (playing_clip_slot == None):
+            log("get_playing_scene_by_track: playing clip_slot not found!")
+            return
+        scenes = self.song.scenes
+        max_scenes = len(scenes)
+        for i in range(max_scenes):
+            clip_slots = scenes[i].clip_slots
+            for clip_slot in clip_slots:
+                if (clip_slot == playing_clip_slot):
+                    return scenes[i]
+
+    # helper function
     def _set_track_clips_enable(self, track_name, value):
         track = self._get_track_by_name(track_name)
         if (track == None):
@@ -351,10 +365,7 @@ class SessionControl(Control):
         if (track == None):
             log("stop_click_track: CLICK track not found!")
             return
-        try:
-            track.stop_all_clips()
-        except:
-            log("stop_click_track: stop_all_clips() method error!")
+        track.stop_all_clips()
 
 
     def scene_bank_to_playing_LC(self, value, mode, status):
@@ -363,30 +374,28 @@ class SessionControl(Control):
         if not self.session:
             return
         track_offset = self.session.track_offset()
-        scene_offset = self.session.scene_offset()
-        scenes = self.song.scenes
-        scene_offset = self._get_playing_clip_slot_by_track(settings.LAUNCH_CONTROL_TRACK)
+        playing_scene = self._get_playing_scene_by_track(settings.LAUNCH_CONTROL_TRACK)
         scenes = self.song.scenes
         max_scenes = len(scenes)
         for i in range(max_scenes):
-            if scene_offset == scenes[i]:
+            if playing_scene == scenes[i]:
                 self.session.set_offsets(track_offset, i)
 
 
     def select_playing_LC_scene(self, value, mode, status):
         if (status == MIDI.CC_STATUS) and not value:
             return
-        clip_slot = self._get_playing_clip_slot_by_track(settings.LAUNCH_CONTROL_TRACK)
-        if (clip_slot == None): return
-        self.song.view.highlighted_clip_slot = clip_slot
+        playing_scene = self._get_playing_scene_by_track(settings.LAUNCH_CONTROL_TRACK)
+        if (playing_scene == None): return
+        self.song.view.selected_scene = playing_scene
 
 
     def select_playing_DNAV_scene(self, value, mode, status):
         if (status == MIDI.CC_STATUS) and not value:
             return
-        clip_slot = self._get_playing_clip_slot_by_track(settings.DYNAMIC_NAV_TRACK)
-        if (clip_slot == None): return
-        self.song.view.highlighted_clip_slot = clip_slot
+        playing_scene = self._get_playing_scene_by_track(settings.DYNAMIC_NAV_TRACK)
+        if (playing_scene == None): return
+        self.song.view.selected_scene = playing_scene
 
 
     def set_NAV_clips_enable(self, value, mode, status):
